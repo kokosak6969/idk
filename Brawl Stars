@@ -1,0 +1,102 @@
+import random
+
+class Brawler:
+    def __init__(self, name, health, damage, rarity):
+        self.name = name
+        self.health = health
+        self.damage = damage
+        self.rarity = rarity
+        self.shots_fired = 0
+        self.super_available = False
+
+    def is_alive(self):
+        return self.health > 0
+
+    def take_damage(self, damage):
+        self.health -= damage
+
+    def attack_opponent(self, opponent):
+        damage = self.damage
+        print(f"{self.name} hits {opponent.name} for {damage} damage!")
+        opponent.take_damage(damage)
+
+        self.shots_fired += 1
+        if self.shots_fired % 5 == 0:  # Check if 5 shots have been fired
+            self.super_available = True
+            print(f"{self.name} charged up their super!")
+
+def main():
+    brawlers_data = [
+        {"name": "Shelly", "health": 3600, "damage": 320, "rarity": "Common"},
+        {"name": "Nita", "health": 3800, "damage": 740, "rarity": "Rare"},
+        {"name": "Colt", "health": 2800, "damage": 300, "rarity": "Rare"},
+        {"name": "Bull", "health": 5200, "damage": 520, "rarity": "Rare"},
+        {"name": "Brock", "health": 2800, "damage": 1040, "rarity": "Rare"},
+        {"name": "Jessie", "health": 3200, "damage": 800, "rarity": "Super Rare"},
+        {"name": "Dynamike", "health": 2800, "damage": 1040, "rarity": "Super Rare"},
+        {"name": "Bo", "health": 3800, "damage": 800, "rarity": "Epic"},
+        {"name": "Tick", "health": 2400, "damage": 728, "rarity": "Super Rare"},
+        {"name": "8-Bit", "health": 4900, "damage": 1040, "rarity": "Super Rare"},
+        {"name": "Emz", "health": 3200, "damage": 520, "rarity": "Epic"},
+        {"name": "El Primo", "health": 8000, "damage": 940, "rarity": "Rare"},
+        {"name": "Barley", "health": 2800, "damage": 1040, "rarity": "Rare"},
+        {"name": "Poco", "health": 3200, "damage": 640, "rarity": "Rare"},
+        {"name": "Rosa", "health": 7800, "damage": 500, "rarity": "Rare"},
+        {"name": "Rico", "health": 2400, "damage": 728, "rarity": "Super Rare"},
+        {"name": "Darryl", "health": 4400, "damage": 728, "rarity": "Super Rare"},
+        {"name": "Penny", "health": 2800, "damage": 1080, "rarity": "Super Rare"},
+        {"name": "Carl", "health": 4200, "damage": 900, "rarity": "Super Rare"},
+        {"name": "Jacky", "health": 7600, "damage": 800, "rarity": "Super Rare"},
+        {"name": "Bibi", "health": 4200, "damage": 980, "rarity": "Epic"},
+        {"name": "Bea", "health": 2800, "damage": 1000, "rarity": "Epic"},
+        {"name": "Frank", "health": 6400, "damage": 1200, "rarity": "Epic"},
+        {"name": "Pam", "health": 5000, "damage": 520, "rarity": "Epic"},
+        {"name": "Piper", "health": 2400, "damage": 1040, "rarity": "Epic"},
+        {"name": "Mortis", "health": 3800, "damage": 1300, "rarity": "Mythic"},
+        {"name": "Tara", "health": 3800, "damage": 1040, "rarity": "Mythic"},
+        {"name": "Gene", "health": 3200, "damage": 1000, "rarity": "Mythic"},
+        {"name": "Max", "health": 3200, "damage": 500, "rarity": "Mythic"},
+        {"name": "Mr. P", "health": 4200, "damage": 1000, "rarity": "Mythic"},
+        {"name": "Spike", "health": 3200, "damage": 1280, "rarity": "Legendary"},
+        {"name": "Crow", "health": 2400, "damage": 448, "rarity": "Legendary"}
+        {"name": "Leon", "health": 3200, "damage": 1056, "rarity": "Legendary"}
+        # Add more brawlers here...
+    ]
+
+    brawlers = [Brawler(**data) for data in brawlers_data]
+
+    rarities_order = ["Common", "Rare", "Super Rare", "Epic", "Mythic", "Legendary"]
+    sorted_brawlers = sorted(brawlers, key=lambda x: (rarities_order.index(x.rarity), x.name))
+
+    print("Welcome to Simplified Brawl Stars!")
+    print("Choose your brawler:")
+    for i, brawler in enumerate(sorted_brawlers, 1):
+        print(f"{i}. {brawler.name: <10} (Health: {brawler.health}, Damage: {brawler.damage}, Rarity: {brawler.rarity})")
+
+    brawler_names = [brawler.name.lower() for brawler in sorted_brawlers]
+    choice = input("Enter the name of your chosen brawler: ").strip().lower()
+    while choice not in brawler_names:
+        print("Invalid choice. Please choose a valid brawler.")
+        choice = input("Enter the name of your chosen brawler: ").strip().lower()
+
+    chosen_brawler = next(brawler for brawler in sorted_brawlers if brawler.name.lower() == choice)
+
+    print(f"You've chosen {chosen_brawler.name}! Let's start the game.\n")
+
+    enemy_brawler = random.choice(sorted_brawlers)
+    print(f"Your opponent is {enemy_brawler.name} ({enemy_brawler.rarity} Rarity)!")
+
+    print("\nBattle begins!\n")
+
+    while chosen_brawler.is_alive() and enemy_brawler.is_alive():
+        chosen_brawler.attack_opponent(enemy_brawler)
+        if enemy_brawler.is_alive():
+            enemy_brawler.attack_opponent(chosen_brawler)
+
+    if chosen_brawler.is_alive():
+        print("\nCongratulations! You won the battle!")
+    else:
+        print("\nGame over! You lost.")
+
+if __name__ == "__main__":
+    main()
